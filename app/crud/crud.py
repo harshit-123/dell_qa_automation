@@ -1,9 +1,13 @@
 from sqlalchemy.orm import Session
+from starlette.status import HTTP_400_BAD_REQUEST
+from fastapi import HTTPException
 from app.models.models import Product, Order
 from app.schemas.schemas import ProductCreate, OrderCreate
 
 # CRUD for Products
 def create_product(db: Session, product: ProductCreate):
+    if product.name is "" or product.description is "":
+        raise HTTPException(status_code=422, detail="Product not found")
     db_product = Product(**product.model_dump())
     db.add(db_product)
     db.commit()
